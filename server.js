@@ -283,107 +283,105 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const fs = require("fs");
 const path = require("path");
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
 
 dotenv.config();
 
 const app = express();
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 
-// =====================
-// Upload setup
-// =====================
-
-const uploadFolder = "uploads";
-
-if (!fs.existsSync(uploadFolder)) {
-  fs.mkdirSync(uploadFolder);
-}
-
+// --------------------
+// FILE UPLOAD
+// --------------------
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadFolder),
+  destination: (req, file, cb) => cb(null, "uploads"),
   filename: (req, file, cb) => {
-    const cleanName = file.originalname.replace(/\s+/g, "_");
-    cb(null, Date.now() + "-" + cleanName);
+    const clean = file.originalname.replace(/\s+/g, "_");
+    cb(null, Date.now() + "-" + clean);
   }
 });
 
 const upload = multer({ storage });
 
 
-// =====================
-// API Route
-// =====================
-
-app.post("/submit", upload.single("pdf"), async (req, res) => {
-  console.log("🔥 /submit HIT");
-    try {
-    const {
-      senderName,
-      applicantName,
-      trn,
-      toEmail
-    } = req.body;
-
-    const filePath = req.file ? req.file.path : null;
-    const originalFileName = req.file ? req.file.originalname : null;
-
-    // Read file if exists
-    let attachments = [];
-
-    if (filePath) {
-      const fileBuffer = fs.readFileSync(filePath);
-
-      attachments.push({
-        filename: originalFileName,
-        content: fileBuffer
-      });
-    }
-
-    // Send email via Resend
-    await resend.emails.send({
-      from: "Visa System <onboarding@resend.dev>",
-      to: toEmail,
-      subject: `Request to Review Visa Draft – ${applicantName}`,
-      text: `
-Dear RMA,
-
-Could you please review the visa draft for ${applicantName}
-(Transaction Reference No.: ${trn})
-
-Thank you.
-
-Best regards,
-${senderName}
-      `,
-      attachments: attachments
-    });
-
-    // delete uploaded file
-    if (filePath) {
-      fs.unlinkSync(filePath);
-    }
-
-    res.json({ success: true });
-
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, error: error.message });
+// --------------------
+// SMTP TRANSPORT (BREVO)
+// --------------------
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
 });
 
 
-// =====================
-// Server
-// =====================
+// --------------------
+// MAIN ROUTE
+// --------------------
+app.post("/submit", upload.single("pdf"), async (req, res) => {
+  console.log("🔥 /submit HIT");
 
+  try {
+    const { senderName, applicantName, trn, toEmail } = req.body;
+
+    let attachments = [];
+
+    if (req.file) {
+      attachments.push({
+        filename: req.file.originalname,
+        path: req.file.path
+      });
+    }
+
+    const mailOptions = {
+      from: `"Visa System" <${process.env.SMTP_USER}>`,
+      to: toEmail,
+      subject: `Visa Draft Review - ${applicantName}`,
+      text: `
+Dear RMA,
+
+Please review visa draft.
+
+Name: ${applicantName}
+TRN: ${trn}
+
+Regards,
+${senderName}
+      `,
+      attachments
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    console.log("✅ EMAIL SENT");
+
+    if (req.file) fs.unlinkSync(req.file.path);
+
+    return res.json({ success: true });
+
+  } catch (error) {
+    console.log("❌ ERROR:", error);
+
+    return res.json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+
+// --------------------
+// SERVER
+// --------------------
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });
