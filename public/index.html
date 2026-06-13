@@ -1,421 +1,4 @@
-<!-- 
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<title>
-Visa Email Automation
-</title>
-
-
-<style>
-
-
-*{
-box-sizing:border-box;
-font-family:Arial, sans-serif;
-}
-
-
-body{
-
-height:100vh;
-
-margin:0;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-background:#0f172a;
-
-color:white;
-
-}
-
-
-
-.card{
-
-width:430px;
-
-background:#111827;
-
-padding:30px;
-
-border-radius:18px;
-
-box-shadow:
-0 20px 50px rgba(0,0,0,.4);
-
-}
-
-
-
-h2{
-
-margin-bottom:5px;
-
-}
-
-
-.subtitle{
-
-color:#94a3b8;
-
-font-size:14px;
-
-margin-bottom:25px;
-
-}
-
-
-
-input{
-
-width:100%;
-
-padding:12px;
-
-margin-bottom:12px;
-
-border-radius:10px;
-
-border:1px solid #334155;
-
-background:#020617;
-
-color:white;
-
-}
-
-
-
-input::placeholder{
-
-color:#64748b;
-
-}
-
-
-
-.file{
-
-border:1px dashed #334155;
-
-padding:10px;
-
-border-radius:10px;
-
-margin-bottom:15px;
-
-}
-
-
-
-button{
-
-width:100%;
-
-padding:13px;
-
-border:none;
-
-border-radius:10px;
-
-background:
-linear-gradient(
-135deg,
-#2563eb,
-#06b6d4
-);
-
-
-color:white;
-
-font-weight:bold;
-
-cursor:pointer;
-
-}
-
-
-
-button:hover{
-
-opacity:.9;
-
-}
-
-
-
-#status{
-
-text-align:center;
-
-margin-top:15px;
-
-font-size:14px;
-
-color:#94a3b8;
-
-}
-
-
-.small{
-
-font-size:12px;
-
-color:#64748b;
-
-margin-bottom:10px;
-
-}
-
-
-
-</style>
-
-
-</head>
-
-
-<body>
-
-
-
-<div class="card">
-
-
-<h2>
-Visa Review System
-</h2>
-
-
-<div class="subtitle">
-Automated email sending tool
-</div>
-
-
-
-<form id="form">
-
-
-<div class="small">
-Sender Details
-</div>
-
-
-<input 
-name="senderName"
-placeholder="Your Name"
-required
->
-
-
-<input 
-type="email"
-name="senderEmail"
-placeholder="Your Gmail"
-required
->
-
-
-<input 
-type="password"
-name="appPassword"
-placeholder="Gmail App Password"
-required
->
-
-
-
-<div class="small">
-Applicant Details
-</div>
-
-
-
-<input
-
-name="applicantName"
-
-placeholder="Applicant Name"
-
-required
-
->
-
-
-<input
-
-name="trn"
-
-placeholder="TRN Number"
-
-required
-
->
-
-
-<input
-
-type="email"
-
-name="toEmail"
-
-placeholder="Recipient Email"
-
-required
-
->
-
-
-
-<div class="file">
-
-<input
-
-type="file"
-
-name="pdf"
-
-accept="application/pdf"
-
->
-
-</div>
-
-
-
-<button>
-
-Send Email
-
-</button>
-
-
-
-</form>
-
-
-
-<div id="status"></div>
-
-
-
-</div>
-
-
-
-
-<script>
-
-
-const form =
-document.getElementById("form");
-
-
-const status =
-document.getElementById("status");
-
-
-
-form.addEventListener(
-"submit",
-
-async(e)=>{
-
-
-e.preventDefault();
-
-
-
-status.innerText="Sending...";
-
-
-
-const formData =
-new FormData(form);
-
-
-
-try{
-
-
-const response =
-await fetch(
-"/submit",
-{
-
-method:"POST",
-
-body:formData
-
-}
-);
-
-
-
-const data =
-await response.json();
-
-
-
-if(data.success){
-
-
-status.innerText=
-"Email sent successfully ✅";
-
-
-form.reset();
-
-
-}
-
-else{
-
-
-status.innerText=
-"Failed ❌";
-
-}
-
-
-
-}
-
-catch(error){
-
-
-status.innerText=
-"Server error ❌";
-
-
-}
-
-
-
-}
-
-);
-
-
-</script>
-
-
-
-</body>
-
-
-</html> -->
-
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 
 <head>
@@ -962,4 +545,214 @@ location.reload();
 
 </body>
 
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visa Email Automation</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+}
+
+.card {
+  width: 420px;
+  background: #111827;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+h2 {
+  margin: 0;
+}
+
+.sub {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #020617;
+  color: white;
+  outline: none;
+}
+
+input::placeholder {
+  color: #64748b;
+}
+
+.file {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px dashed #334155;
+  border-radius: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg,#2563eb,#06b6d4);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#status {
+  margin-top: 12px;
+  font-size: 13px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.small {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 10px;
+}
+
+.checkbox {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox input {
+  width: auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Visa Email System</h2>
+<div class="sub">Send visa review emails instantly</div>
+
+<form id="form">
+
+<!-- Sender -->
+<input name="senderName" placeholder="Your Name" required />
+<input name="senderEmail" placeholder="Your Gmail" required />
+<input type="password" name="appPassword" placeholder="Gmail App Password" required />
+
+<!-- Recipient -->
+<input name="applicantName" placeholder="Applicant Name" required />
+<input name="trn" placeholder="TRN Number" required />
+<input type="email" name="toEmail" placeholder="Recipient Email" required />
+
+<!-- File -->
+<div class="file">
+<input type="file" name="pdf" accept="application/pdf">
+</div>
+
+<!-- Save option -->
+<label class="checkbox">
+<input type="checkbox" id="remember">
+Remember sender details
+</label>
+
+<button type="submit">Send Email</button>
+
+</form>
+
+<div id="status"></div>
+
+</div>
+
+<script>
+const form = document.getElementById("form");
+const status = document.getElementById("status");
+const remember = document.getElementById("remember");
+
+// Load saved data
+window.onload = () => {
+  const saved = localStorage.getItem("visa_sender");
+  if (saved) {
+    const data = JSON.parse(saved);
+
+    document.querySelector('[name="senderName"]').value = data.senderName || "";
+    document.querySelector('[name="senderEmail"]').value = data.senderEmail || "";
+    document.querySelector('[name="appPassword"]').value = data.appPassword || "";
+    document.querySelector('[name="toEmail"]').value = data.toEmail || "";
+
+    remember.checked = true;
+  }
+};
+
+// Submit form
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  status.innerText = "Sending...";
+
+  const formData = new FormData(form);
+
+  // Save sender + recipient (browser only)
+  if (remember.checked) {
+    const saveData = {
+      senderName: formData.get("senderName"),
+      senderEmail: formData.get("senderEmail"),
+      appPassword: formData.get("appPassword"),
+      toEmail: formData.get("toEmail")
+    };
+
+    localStorage.setItem("visa_sender", JSON.stringify(saveData));
+  } else {
+    localStorage.removeItem("visa_sender");
+  }
+
+  try {
+    const res = await fetch("/submit", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      status.innerText = "Email sent successfully ✅";
+
+      form.querySelector('[name="applicantName"]').value = "";
+      form.querySelector('[name="trn"]').value = "";
+      form.querySelector('[name="pdf"]').value = "";
+    } else {
+      status.innerText = "Failed ❌";
+    }
+
+  } catch (err) {
+    status.innerText = "Server error ❌";
+  }
+});
+</script>
+
+</body>
 </html>

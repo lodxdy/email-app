@@ -1,87 +1,9 @@
-// // const express = require("express");
-// // const multer = require("multer");
-// // const nodemailer = require("nodemailer");
-// // const dotenv = require("dotenv");
-// // const cors = require("cors");
-// // const path = require("path");
-
-// // dotenv.config();
-
-// // const app = express();
-// // app.use(cors());
-// // app.use(express.static("public"));
-
-// // const storage = multer.diskStorage({
-// //   destination: "uploads/",
-// //   filename: (req, file, cb) => {
-// //     cb(null, Date.now() + "-" + file.originalname);
-// //   }
-// // });
-
-// // const upload = multer({ storage });
-
-// // // Email sender
-// // async function sendEmail(name, trn, filePath) {
-// //   const transporter = nodemailer.createTransport({
-// //     service: "gmail",
-// //     auth: {
-// //       user: process.env.EMAIL,
-// //       pass: process.env.APP_PASSWORD
-// //     }
-// //   });
-
-// //   const mailOptions = {
-// //     from: process.env.EMAIL,
-// //     to: process.env.TO_EMAIL,
-// //     subject: `Request to Review Visa Draft – ${name}`,
-// //     text: `
-// // Dear RMA,
-
-// // Could you please review the visa draft for ${name} (Transaction Reference No.: ${trn}) and let me know if it is ready for lodgment?
-
-// // I would appreciate your confirmation so I can proceed accordingly.
-
-// // Thank you for your assistance.
-
-// // Best regards
-// //     `,
-// //     attachments: [
-// //       {
-// //         filename:"visa-draft.pdf",
-// //         path: filePath
-// //       }
-// //     ]
-// //   };
-
-// //   await transporter.sendMail(mailOptions);
-// // }
-
-// // // API route
-// // app.post("/submit", upload.single("pdf"), async (req, res) => {
-// //   try {
-// //     const { name, trn } = req.body;
-// //     const filePath = req.file.path;
-
-// //     await sendEmail(name, trn, filePath);
-
-// //     res.json({ success: true, message: "Email sent successfully" });
-// //   } catch (err) {
-// //     console.log(err);
-// //     res.status(500).json({ success: false, error: err.message });
-// //   }
-// // });
-
-// // app.listen(process.env.PORT, () => {
-// //   console.log(`Server running on http://localhost:${process.env.PORT}`);
-// // });
-
 // const express = require("express");
 // const multer = require("multer");
 // const nodemailer = require("nodemailer");
 // const cors = require("cors");
 // const dotenv = require("dotenv");
 // const fs = require("fs");
-// const path = require("path");
 
 // dotenv.config();
 
@@ -90,12 +12,12 @@
 // app.use(cors());
 // app.use(express.json());
 
-
-// // Serve frontend
 // app.use(express.static("public"));
 
 
-// // Upload configuration
+// // ======================
+// // Upload Setup
+// // ======================
 
 // const uploadFolder = "uploads";
 
@@ -106,15 +28,20 @@
 
 // const storage = multer.diskStorage({
 
-//     destination: function(req, file, cb){
+//     destination:(req,file,cb)=>{
 //         cb(null, uploadFolder);
 //     },
 
-//     filename: function(req, file, cb){
 
-//         const cleanName = file.originalname.replace(/\s+/g, "_");
+//     filename:(req,file,cb)=>{
 
-//         cb(null, Date.now() + "-" + cleanName);
+//         const cleanName =
+//         file.originalname.replace(/\s+/g,"_");
+
+//         cb(
+//             null,
+//             Date.now()+"-"+cleanName
+//         );
 
 //     }
 
@@ -122,50 +49,63 @@
 
 
 // const upload = multer({
-//     storage: storage
+//     storage
 // });
 
 
 
-// // Send Email Function
+// // ======================
+// // Email Function
+// // ======================
 
-// async function sendEmail(data){
+// async function sendEmail({
 
-//     const {
-//         senderName,
-//         senderEmail,
-//         appPassword,
-//         applicantName,
-//         trn,
-//         toEmail,
-//         filePath,
-//         originalFileName
-//     } = data;
+//     senderName,
+//     senderEmail,
+//     appPassword,
 
+//     applicantName,
+//     trn,
 
+//     toEmail,
 
-//     const transporter = nodemailer.createTransport({
+//     filePath,
+//     originalFileName
 
-//         service:"gmail",
-
-//         auth:{
-//             user: senderEmail,
-//             pass: appPassword
-//         }
-
-//     });
+// }){
 
 
+// const transporter =
+// nodemailer.createTransport({
 
-//     const mailOptions = {
+//     service:"gmail",
 
-//         from:`"${senderName}" <${senderEmail}>`,
+//     auth:{
+//         user:senderEmail,
+//         pass:appPassword
+//     }
 
-//         to:toEmail,
+// });
 
-//         subject:`Request to Review Visa Draft – ${applicantName}`,
 
-//         text:
+
+// const mailOptions = {
+
+
+//     from:
+//     `"${senderName}" <${senderEmail}>`,
+
+
+//     to:
+//     toEmail,
+
+
+//     subject:
+//     `Request to Review Visa Draft – ${applicantName}`,
+
+
+//     text:
+
 // `
 // Dear RMA,
 
@@ -178,20 +118,32 @@
 // Thank you for your assistance.
 
 // Best regards,
+
 // ${senderName}
 // `,
 
-//         attachments: filePath ? [
-//             {
-//                 filename: originalFileName,
-//                 path:filePath
-//             }
-//         ] : []
 
-//     };
+// attachments:
+
+// filePath ?
+
+// [
+// {
+//     filename:originalFileName,
+//     path:filePath
+// }
+// ]
+
+// :
+
+// []
+
+// };
 
 
-//     await transporter.sendMail(mailOptions);
+
+// await transporter.sendMail(mailOptions);
+
 
 // }
 
@@ -199,13 +151,17 @@
 
 
 
-// // API
+// // ======================
+// // API Route
+// // ======================
+
 
 // app.post(
 // "/submit",
 // upload.single("pdf"),
 
 // async(req,res)=>{
+
 
 // try{
 
@@ -215,22 +171,32 @@
 // senderName,
 // senderEmail,
 // appPassword,
+
 // applicantName,
 // trn,
+
 // toEmail
+
 
 // }=req.body;
 
 
 
-// const filePath = req.file 
-// ? req.file.path 
-// : null;
+// const filePath =
+// req.file
+// ?
+// req.file.path
+// :
+// null;
 
 
-// const originalFileName = req.file
-// ? req.file.originalname
-// : null;
+
+// const originalFileName =
+// req.file
+// ?
+// req.file.originalname
+// :
+// null;
 
 
 
@@ -239,9 +205,12 @@
 // senderName,
 // senderEmail,
 // appPassword,
+
 // applicantName,
 // trn,
+
 // toEmail,
+
 // filePath,
 // originalFileName
 
@@ -249,11 +218,11 @@
 
 
 
-// // delete uploaded file
+// // Delete file after sending
 
 // if(filePath){
 
-//     fs.unlinkSync(filePath);
+// fs.unlinkSync(filePath);
 
 // }
 
@@ -270,6 +239,7 @@
 // }
 
 // catch(error){
+
 
 // console.log(error);
 
@@ -291,289 +261,128 @@
 
 
 
+// // ======================
+// // Server
+// // ======================
 
-// app.listen(3000,"0.0.0.0",()=>{
+// app.listen(
+// process.env.PORT || 3000,
+// "0.0.0.0",
+
+// ()=>{
 
 // console.log(
-// "Server running on http://localhost:3000"
+// `Server running on http://localhost:${process.env.PORT || 3000}`
 // );
 
 // });
+
 const express = require("express");
 const multer = require("multer");
-const nodemailer = require("nodemailer");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const fs = require("fs");
+const path = require("path");
+const { Resend } = require("resend");
 
 dotenv.config();
 
 const app = express();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(cors());
 app.use(express.json());
-
 app.use(express.static("public"));
 
 
-// ======================
-// Upload Setup
-// ======================
+// =====================
+// Upload setup
+// =====================
 
 const uploadFolder = "uploads";
 
 if (!fs.existsSync(uploadFolder)) {
-    fs.mkdirSync(uploadFolder);
+  fs.mkdirSync(uploadFolder);
 }
 
-
 const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadFolder),
+  filename: (req, file, cb) => {
+    const cleanName = file.originalname.replace(/\s+/g, "_");
+    cb(null, Date.now() + "-" + cleanName);
+  }
+});
 
-    destination:(req,file,cb)=>{
-        cb(null, uploadFolder);
-    },
+const upload = multer({ storage });
 
 
-    filename:(req,file,cb)=>{
+// =====================
+// API Route
+// =====================
 
-        const cleanName =
-        file.originalname.replace(/\s+/g,"_");
+app.post("/submit", upload.single("pdf"), async (req, res) => {
+  try {
+    const {
+      senderName,
+      applicantName,
+      trn,
+      toEmail
+    } = req.body;
 
-        cb(
-            null,
-            Date.now()+"-"+cleanName
-        );
+    const filePath = req.file ? req.file.path : null;
+    const originalFileName = req.file ? req.file.originalname : null;
 
+    // Read file if exists
+    let attachments = [];
+
+    if (filePath) {
+      const fileBuffer = fs.readFileSync(filePath);
+
+      attachments.push({
+        filename: originalFileName,
+        content: fileBuffer
+      });
     }
 
-});
-
-
-const upload = multer({
-    storage
-});
-
-
-
-// ======================
-// Email Function
-// ======================
-
-async function sendEmail({
-
-    senderName,
-    senderEmail,
-    appPassword,
-
-    applicantName,
-    trn,
-
-    toEmail,
-
-    filePath,
-    originalFileName
-
-}){
-
-
-const transporter =
-nodemailer.createTransport({
-
-    service:"gmail",
-
-    auth:{
-        user:senderEmail,
-        pass:appPassword
-    }
-
-});
-
-
-
-const mailOptions = {
-
-
-    from:
-    `"${senderName}" <${senderEmail}>`,
-
-
-    to:
-    toEmail,
-
-
-    subject:
-    `Request to Review Visa Draft – ${applicantName}`,
-
-
-    text:
-
-`
+    // Send email via Resend
+    await resend.emails.send({
+      from: "Visa System <onboarding@resend.dev>",
+      to: toEmail,
+      subject: `Request to Review Visa Draft – ${applicantName}`,
+      text: `
 Dear RMA,
 
 Could you please review the visa draft for ${applicantName}
 (Transaction Reference No.: ${trn})
-and let me know if it is ready for lodgment?
 
-I would appreciate your confirmation so I can proceed accordingly.
-
-Thank you for your assistance.
+Thank you.
 
 Best regards,
-
 ${senderName}
-`,
+      `,
+      attachments: attachments
+    });
 
+    // delete uploaded file
+    if (filePath) {
+      fs.unlinkSync(filePath);
+    }
 
-attachments:
+    res.json({ success: true });
 
-filePath ?
-
-[
-{
-    filename:originalFileName,
-    path:filePath
-}
-]
-
-:
-
-[]
-
-};
-
-
-
-await transporter.sendMail(mailOptions);
-
-
-}
-
-
-
-
-
-// ======================
-// API Route
-// ======================
-
-
-app.post(
-"/submit",
-upload.single("pdf"),
-
-async(req,res)=>{
-
-
-try{
-
-
-const {
-
-senderName,
-senderEmail,
-appPassword,
-
-applicantName,
-trn,
-
-toEmail
-
-
-}=req.body;
-
-
-
-const filePath =
-req.file
-?
-req.file.path
-:
-null;
-
-
-
-const originalFileName =
-req.file
-?
-req.file.originalname
-:
-null;
-
-
-
-await sendEmail({
-
-senderName,
-senderEmail,
-appPassword,
-
-applicantName,
-trn,
-
-toEmail,
-
-filePath,
-originalFileName
-
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, error: error.message });
+  }
 });
 
 
-
-// Delete file after sending
-
-if(filePath){
-
-fs.unlinkSync(filePath);
-
-}
-
-
-
-res.json({
-
-success:true
-
-});
-
-
-
-}
-
-catch(error){
-
-
-console.log(error);
-
-
-res.json({
-
-success:false,
-
-error:error.message
-
-});
-
-
-}
-
-
-});
-
-
-
-
-// ======================
+// =====================
 // Server
-// ======================
+// =====================
 
-app.listen(
-process.env.PORT || 3000,
-"0.0.0.0",
+const PORT = process.env.PORT || 3000;
 
-()=>{
-
-console.log(
-`Server running on http://localhost:${process.env.PORT || 3000}`
-);
-
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });
