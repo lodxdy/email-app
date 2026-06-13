@@ -321,6 +321,8 @@ const upload = multer({ storage });
 // =====================
 
 app.post("/submit", upload.single("pdf"), async (req, res) => {
+  console.log("🔥 /submit HIT");
+   res.json({ success: true });
   try {
     const {
       senderName,
